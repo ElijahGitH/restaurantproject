@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";   // add this
+import Navbar from "./components/Navbar";
 import LoginPage from "./pages/LoginPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard";
@@ -9,8 +9,10 @@ function App() {
   return (
     <Router>
 
-      <Navbar />  {/* navbar appears on all pages */}
+      {/* Navbar always visible */}
+      <Navbar />
 
+      {/* Page content changes below */}
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="/admin" element={<AdminDashboard />} />
