@@ -1,28 +1,18 @@
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #242424;
-  padding: 15px 40px;
-  color: white;
+import { Link } from "react-router-dom";
+import "./Navbar.css";
+
+function Navbar() {
+  return (
+    <nav className="navbar">
+      <h2 className="logo">Restaurant</h2>
+
+      <ul className="nav-links">
+        <li><Link to="/">Home</Link></li>
+        <li><Link to="/admin">Admin</Link></li>
+        <li><Link to="/user">User</Link></li>
+      </ul>
+    </nav>
+  );
 }
 
-.logo {
-  margin: 0;
-}
-
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 25px;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: white;
-  font-weight: 500;
-}
-
-.nav-links a:hover {
-  color: #61dafb;
-}
+export default Navbar;
