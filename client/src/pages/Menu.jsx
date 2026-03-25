@@ -14,7 +14,7 @@ function Menu() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>🌮 Menu</h1>
+      <h1>Menu</h1>
 
       {menuItems.map((item, index) => (
         <div key={index} style={{ marginBottom: "15px" }}>
