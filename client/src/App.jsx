@@ -5,8 +5,6 @@ import LoginPage from "./pages/LoginPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard";
 import Menu from "./pages/Menu";
-import Reservations from "./pages/Reservations";
-import Help from "./pages/Help";
 
 function App() {
     return (
@@ -18,8 +16,6 @@ function App() {
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/user" element={<UserDashboard />} />
                 <Route path="/menu" element={<Menu />} />
-                <Route path="/reservations" element={<Reservations />} />
-                <Route path="/help" element={<Help />} />
             </Routes>
         </Router>
     );
