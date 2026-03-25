@@ -1,6 +1,4 @@
 import { useState } from "react";
-import "./Menu.css";
-
 function Menu() {
   const [menuItems] = useState([
     { name: "Tacos", description: "Soft corn tortillas with your choice of meat, onions, and cilantro", price: 3.5 },
