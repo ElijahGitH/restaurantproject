@@ -6,6 +6,8 @@ import AddCustomer from './pages/AddCustomer.jsx'
 import AddAdmin from './pages/AddAdmin.jsx'
 import UserDashboard from './pages/UserDashboard.jsx'
 import AdminDashboard from './pages/AdminDashboard.jsx'
+import Navbar from './components/NavBar.jsx'
+import Menu from './pages/Menu.jsx'
 
 let root = createRoot(document.getElementById('root'));
 
@@ -52,6 +54,14 @@ export function AdminDash(){
     </StrictMode>
   )
 
+}
+
+function showMenu(){
+  root.render(
+    <StrictMode>
+      <Menu/>
+    </StrictMode>
+  )
 }
 
 login();
