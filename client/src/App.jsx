@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import LoginPage from "./pages/LoginPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard";
+import Menu from "./pages/Menu";
 function App() {
     return (
         <Router>
@@ -13,6 +14,7 @@ function App() {
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/user" element={<UserDashboard />} />
+                <Route path="/user" element={<Menu />} />
             </Routes>
         </Router>
     );
