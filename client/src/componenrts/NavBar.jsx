@@ -3,8 +3,7 @@ import { Link } from "react-router-dom";
 function Navbar() {
     return (
         <nav style={styles.nav}>
-            <h2 style={styles.logo}>Restaurant App</h2>
-
+            <h2 style={styles.logo}>Restaurant App  </h2>
             <div style={styles.links}>
                 <Link to="/" style={styles.link}>Login</Link>
                 <Link to="/admin" style={styles.link}>Admin</Link>
@@ -27,7 +26,7 @@ const styles = {
         color: "white",
     },
     logo: {
-        margin: 0,
+        marginRight: "10px",
     },
     links: {
         display: "flex",
