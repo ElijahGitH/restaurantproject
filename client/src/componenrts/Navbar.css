@@ -8,7 +8,7 @@
 }
 
 .logo {
-  margin: 0;
+    margin-right: 10px;
 }
 
 .nav-links {
@@ -26,3 +26,4 @@
 .nav-links a:hover {
   color: #61dafb;
 }
+
