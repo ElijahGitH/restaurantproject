@@ -1,5 +1,6 @@
 import Add from './UserDatabaseAdd.jsx'
 import { useState } from "react";
+import {login} from '../main'
 
 function AddAdmin(){
     const [username, setUsername] = useState("");
@@ -23,7 +24,8 @@ function AddAdmin(){
         <div>
             <input type="text" onChange={handleUsernameChange} value={username} placeholder = "Username" id="username"/><br/>
             <input type="text" onChange={handlePasswordChange} value={password} placeholder = "Password" id="password"/><br/>
-            <button onClick={()=>Add(1,username,password)}>Create Account</button>
+            <button onClick={()=>Add(1,username,password)}>Create Account</button><br></br>
+            <button onClick={()=>login()}>Return to Login</button>
         </div>
     </div>
   );

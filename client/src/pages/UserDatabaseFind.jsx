@@ -12,7 +12,7 @@ async function loginCheck(username,password){
     if(isAdmin === true){
         foundUser = data.find((user)=>user.username === username);
         if (foundUser.password === password){
-            return(AdminDash());
+            return(AdminDash(username));
         }
     }
 
@@ -23,7 +23,7 @@ async function loginCheck(username,password){
     if(isUser === true){
         foundUser = data.find((user)=>user.username === username);
         if (foundUser.password === password){
-            return(CustomerDash());
+            return(CustomerDash(username));
         }
     }
 }
