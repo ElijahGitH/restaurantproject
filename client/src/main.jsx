@@ -11,55 +11,54 @@ import Menu from './pages/Menu.jsx'
 
 let root = createRoot(document.getElementById('root'));
 
+
+
+/*console.log(signedIn);*/
 export function login(){
   root.render(
   <StrictMode>
     <LoginPage/>
-    <button onClick={()=>AddCust()}>Add Customer</button>
-    <button onClick={()=>AddAdministrator()}>Add Administrator</button>
   </StrictMode>)
 }
 
-function AddCust(){
+export function AddCust(){
   root.render(
     <StrictMode>
       <AddCustomer/>
-      <button onClick={()=>login()}>Return to Login</button>
     </StrictMode>
   )
 }
 
-function AddAdministrator(){
+export function AddAdministrator(){
   root.render(
     <StrictMode>
       <AddAdmin/>
-      <button onClick={()=>login()}>Return to Login</button>
     </StrictMode>
   )
 }
 
-export function CustomerDash(){
+export function CustomerDash(username){
   root.render(
     <StrictMode>
-      <UserDashboard/>
-    </StrictMode>
-  )
-
-}
-
-export function AdminDash(){
-  root.render(
-    <StrictMode>
-      <AdminDashboard/>
+      <UserDashboard username = {username}/>
     </StrictMode>
   )
 
 }
 
-function showMenu(){
+export function AdminDash(username){
   root.render(
     <StrictMode>
-      <Menu/>
+      <AdminDashboard username={username}/>
+    </StrictMode>
+  )
+
+}
+
+export function showMenu(username){
+  root.render(
+    <StrictMode>
+      <Menu username = {username}/>
     </StrictMode>
   )
 }
