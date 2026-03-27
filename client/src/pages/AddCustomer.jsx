@@ -16,8 +16,6 @@ function AddCustomer(){
         setPassword(e.target.value);
     }
 
-    console.log(username,password);
-
     return (
     <div style={{ textAlign: "center", marginTop: "100px" }}>
       <h1>Add New Customer</h1>
