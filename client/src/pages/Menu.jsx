@@ -1,6 +1,5 @@
 import { useState } from "react";
-import {CustomerDash} from "../main"
-function Menu({username}) {
+function Menu() {
   const [menuItems] = useState([
     { name: "Tacos", description: "Soft corn tortillas with your choice of meat, onions, and cilantro", price: 3.5 },
     { name: "Burrito", description: "Large flour tortilla filled with rice, beans, cheese, and protein", price: 10.99 },
@@ -22,7 +21,6 @@ function Menu({username}) {
           <p>{item.description}</p>
         </div>
       ))}
-      <button onClick={()=>CustomerDash(username)}>Exit</button>
     </div>
   );
 }
