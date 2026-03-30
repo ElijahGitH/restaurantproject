@@ -5,8 +5,8 @@ function Navbar() {
         <nav style={styles.nav}>
             <h2 style={styles.logo}>Restaurant App  </h2>
             <div style={styles.links}>
-                <Link to="/" style={styles.link}>Login</Link>
                 <Link to="/home" style={styles.link}>Home</Link>
+                <Link to="/loginpage" style={styles.link}>Login</Link>
                 <Link to="/menu" style={styles.link}>Menu</Link>
                 <Link to="/reservations" style={styles.link}>Reservations</Link>
                 <Link to="/help" style={styles.link}>Help</Link>
