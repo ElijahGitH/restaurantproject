@@ -9,6 +9,8 @@ import UserDashboard from "./pages/UserDashboard";
 import Menu from "./pages/Menu";
 import AddAdmin from "./pages/AddAdmin";
 import AddCustomer from "./pages/AddCustomer";
+import AddCustomer from "./pages/Reservations";
+
 
 function App() {
     return (
@@ -21,6 +23,7 @@ function App() {
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/user" element={<UserDashboard />} />
                 <Route path="/menu" element={<Menu />} />
+                <Route path="/reservations" element={<Reservations />} />
                 <Route path="/userregister" element={<AddCustomer />} />
                 <Route path="/adminregister" element={<AddAdmin />} />
             </Routes>
