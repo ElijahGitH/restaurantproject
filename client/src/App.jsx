@@ -9,7 +9,7 @@ import UserDashboard from "./pages/UserDashboard";
 import Menu from "./pages/Menu";
 import AddAdmin from "./pages/AddAdmin";
 import AddCustomer from "./pages/AddCustomer";
-import AddCustomer from "./pages/Reservations";
+import Reservations from "./pages/Reservations";
 
 
 function App() {
