@@ -58,12 +58,8 @@ export default function Home() {
             {/* ACCOUNT SECTION */}
             <section style={{ textAlign: "center", marginBottom: "40px" }}>
                 <h2> Your Account</h2>
-                <button onClick={() => navigate("/login")}>
+                <button onClick={() => navigate("/loginpage")}>
                     Login
-                </button>
-
-                <button onClick={() => navigate("/dashboard")} style={{ marginLeft: "10px" }}>
-                    Go to Dashboard
                 </button>
             </section>
 
