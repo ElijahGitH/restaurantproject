@@ -18,6 +18,7 @@ function App() {
             <Navbar />
 
             <Routes>
+                <Route path="/" element={<Home />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/loginpage" element={<LoginPage />} />
                 <Route path="/admin" element={<AdminDashboard />} />
