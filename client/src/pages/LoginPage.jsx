@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import loginCheck from './UserDatabaseFind';
 import {useNavigate} from 'react-router-dom';
 /*import {AddCust, AddAdministrator} from '../main'*/
 
@@ -10,16 +9,20 @@ function LoginPage() {
   const navigate = useNavigate();
   let value;
 
-  const handleLogin = () =>{
-    value = loginCheck(username,password)
-    if(value === 1){
-      navigate('/admin');
+  async function handleLogin(){
+      let response = await fetch("http://localhost:5000/users");
+      let data = await response.json();
+      let user = data.find(user => user.username === username);
+      
+      if (user.role === "user"){
+        navigate("/user");
+      }
+
+      if(user.role === "admin"){
+        navigate("/admin");
+      }
     }
-    if(value === 0){
-      navigate('/user');
-    }
-  }
-  
+
   function handleUsernameChange(e)
   {
       setUsername(e.target.value);
@@ -36,7 +39,7 @@ function LoginPage() {
         <div>
             <input type="text" onChange={handleUsernameChange} value={username} placeholder = "Username" id="username"/><br/>
             <input type="text" onChange={handlePasswordChange} value={password} placeholder = "Password" id="password"/><br/>
-            <button onClick={handleLogin}>Login</button><br></br>
+            <button onClick={()=>handleLogin()}>Login</button><br></br>
             <Link to="/userregister">Customer Registration</Link><br></br>
             <Link to="/adminregister">Administrator Registration</Link>
         </div>
