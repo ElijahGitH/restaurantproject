@@ -1,0 +1,175 @@
+/* Main dashboard page */
+.dashboard-page {
+  padding: 30px;
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* Top bar with title and logout */
+.dashboard-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+.dashboard-top-bar h1 {
+  margin-bottom: 8px;
+  color: #1f3b57;
+  font-size: 48px;
+}
+
+.dashboard-top-bar p {
+  color: #555555;
+  font-size: 20px;
+}
+
+/* Logout button */
+.logout-button {
+  background-color: #8b3a3a;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #6f2f2f;
+}
+
+/* Message text */
+.page-message {
+  margin-bottom: 20px;
+  color: #8b1e1e;
+  font-weight: bold;
+}
+
+/* Card area */
+.card-grid {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+/* One stat card */
+.dashboard-card {
+  background-color: white;
+  border: 1px solid #d8d8d8;
+  border-radius: 10px;
+  padding: 20px;
+  width: 210px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.dashboard-card h3 {
+  margin-bottom: 10px;
+  color: #1f3b57;
+}
+
+.dashboard-card p {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* Generic content section */
+.dashboard-section {
+  background-color: white;
+  border: 1px solid #d8d8d8;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.dashboard-section h2 {
+  margin-bottom: 15px;
+  color: #1f3b57;
+}
+
+/* Form styling */
+.dashboard-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.dashboard-form input,
+.dashboard-form select {
+  padding: 10px;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  min-width: 180px;
+}
+
+.dashboard-form button {
+  background-color: #1f3b57;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.dashboard-form button:hover {
+  background-color: #2e567d;
+}
+
+/* Cancel button */
+.cancel-button {
+  background-color: #777777 !important;
+}
+
+.cancel-button:hover {
+  background-color: #555555 !important;
+}
+
+/* Table styling */
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+  border: 1px solid #cccccc;
+  padding: 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.dashboard-table th {
+  background-color: #f2f2f2;
+  color: #1f3b57;
+}
+
+/* Normal table buttons */
+.dashboard-table button {
+  background-color: #1f3b57;
+  color: white;
+  border: none;
+  padding: 7px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 5px;
+  margin-top: 4px;
+}
+
+.dashboard-table button:hover {
+  background-color: #2e567d;
+}
+
+/* Smaller buttons */
+.small-button {
+  background-color: #777777 !important;
+  padding: 6px 8px !important;
+}
+
+.small-button:hover {
+  background-color: #555555 !important;
+}
