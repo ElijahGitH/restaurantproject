@@ -24,11 +24,13 @@ function AddAdmin(){
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 }
+            });
+            if(response.ok === false){
+                window.alert("This username is already taken");
             } 
-        );
     }
         catch(error){
-            window.alert("This username is already taken");
+            console.log("Error");
         }
     }
 

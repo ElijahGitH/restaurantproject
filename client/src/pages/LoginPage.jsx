@@ -14,13 +14,19 @@ function LoginPage() {
       let data = await response.json();
       let user = data.find(user => user.username === username);
       
-      if (user.role === "user"){
-        navigate("/user");
-      }
+      if(user != undefined && user.passwordHash === password){
+        if (user.role === "user"){
+          navigate("/user");
+        }
 
-      if(user.role === "admin"){
-        navigate("/admin");
+        if(user.role === "admin"){
+          navigate("/admin");
+        }
       }
+      else{
+        window.alert("Username or Password is Incorrect");
+      }
+      
     }
 
   function handleUsernameChange(e)
