@@ -169,7 +169,7 @@ function AdminDashboard() {
                     <span className="bar-label">Bar</span>
                     <div className="bar-seats">
                         {[...Array(17)].map((_, i) => {
-                            const seatNum = i + 1;
+                            const seatNum = i + 21;
                             const reserved = reservations.find(
                                 (r) => r.tableNumber === `bar-${seatNum}`
                             );
@@ -177,8 +177,11 @@ function AdminDashboard() {
                                 <div
                                     key={seatNum}
                                     className={`bar-seat ${reserved ? "bar-seat-reserved" : "bar-seat-available"}`}
-                                    title={reserved ? `Reserved: ${reserved.customerName}` : `Seat ${seatNum} available`}
-                                />
+                                    title={reserved ? `Seat ${seatNum} — Reserved: ${reserved.customerName}` : `Seat ${seatNum} — Available`}
+                                    onClick={() => setTableNumber(`bar-${seatNum}`)}
+                                >
+                                    {seatNum}
+                                </div>
                             );
                         })}
                     </div>
@@ -220,6 +223,7 @@ function AdminDashboard() {
                         );
                     })}
                 </div>
+
             </div>
 
         </div>
