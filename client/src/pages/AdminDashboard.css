@@ -1,0 +1,137 @@
+/* Page layout */
+.dashboard-page {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f5f6fa;
+}
+
+/* Top bar */
+.dashboard-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.logout-button {
+  padding: 8px 15px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Stats cards */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.dashboard-card {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Sections */
+.dashboard-section {
+  background: white;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Forms */
+.dashboard-form input {
+  margin: 5px;
+  padding: 8px;
+}
+
+.dashboard-form button {
+  padding: 8px 12px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+/* 🎬 SEATING LAYOUT */
+.seating-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* Seat (table) */
+.seat-box {
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: bold;
+}
+
+/* Hover effect (movie-style feel) */
+.seat-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Available (green) */
+.available {
+  background: linear-gradient(145deg, #28a745, #218838);
+}
+
+/* Occupied (red) */
+.occupied {
+  background: linear-gradient(145deg, #dc3545, #c82333);
+}
+
+/* Optional: Pending (yellow if you add later) */
+.pending {
+  background: linear-gradient(145deg, #ffc107, #e0a800);
+  color: black;
+}
+
+/* Labels inside seats */
+.seat-box h4 {
+  margin-bottom: 5px;
+}
+
+.seat-box p {
+  font-size: 12px;
+}
+
+/* Tables */
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.dashboard-table th {
+  background-color: #333;
+  color: white;
+}
+
+/* Small buttons */
+.small-button {
+  margin: 2px;
+  padding: 5px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
