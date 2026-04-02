@@ -311,6 +311,38 @@ function AdminDashboard() {
       });
   }
 
+  {/* Seating Layout Section */}
+<div className="dashboard-section">
+  <h2>Seating Layout</h2>
+
+  <div className="seating-grid">
+    {[...Array(20)].map((_, index) => {
+      const tableNum = index + 1;
+
+      const reservation = reservations.find(
+        (r) => Number(r.tableNumber) === tableNum
+      );
+
+      return (
+        <div
+          key={tableNum}
+          className={`seat-box ${reservation ? "occupied" : "available"}`}
+        >
+          <h4>Table {tableNum}</h4>
+
+          {reservation ? (
+            <>
+              <p>{reservation.customerName}</p>
+              <p style={{ fontSize: "12px" }}>Reserved</p>
+            </>
+          ) : (
+            <p style={{ fontSize: "12px" }}>Available</p>
+          )}
+        </div>
+      );
+    })}
+  </div>
+</div>
   /* ------------------------------ */
   /* Order functions */
   /* ------------------------------ */
