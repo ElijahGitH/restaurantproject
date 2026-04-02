@@ -17,7 +17,6 @@ function AdminDashboard() {
     });
 
     const [pageMessage, setPageMessage] = useState("");
-
     const [menuItems, setMenuItems] = useState([]);
     const [reservations, setReservations] = useState([]);
     const [orders, setOrders] = useState([]);
@@ -29,8 +28,11 @@ function AdminDashboard() {
 
     const [customerName, setCustomerName] = useState("");
     const [tableNumber, setTableNumber] = useState("");
+    const [partySize, setPartySize] = useState("");
     const [reservationTime, setReservationTime] = useState("");
     const [editReservationId, setEditReservationId] = useState("");
+
+    const [selectedTable, setSelectedTable] = useState(null);
 
     useEffect(() => {
         loadAdminStats();
@@ -93,19 +95,19 @@ function AdminDashboard() {
 
         fetch("http://localhost:5000/api/reservations", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 userId,
                 customerName,
                 tableNumber,
+                partySize,
                 reservationTime,
                 approvalStatus: "Approved"
             })
         }).then(() => {
             setCustomerName("");
             setTableNumber("");
+            setPartySize("");
             setReservationTime("");
             loadReservations();
         });
@@ -146,6 +148,7 @@ function AdminDashboard() {
                 <form onSubmit={saveReservation}>
                     <input placeholder="Customer Name" value={customerName} onChange={e => setCustomerName(e.target.value)} />
                     <input placeholder="Table #" value={tableNumber} onChange={e => setTableNumber(e.target.value)} />
+                    <input placeholder="Party Size" type="number" min="1" value={partySize} onChange={e => setPartySize(e.target.value)} />
                     <input type="datetime-local" value={reservationTime} onChange={e => setReservationTime(e.target.value)} />
                     <button>Reserve</button>
                 </form>
@@ -155,26 +158,63 @@ function AdminDashboard() {
             <div className="dashboard-section">
                 <h2>Seating Layout</h2>
 
-                <div className="seating-grid">
+                <div className="seating-legend">
+                    <span className="legend-item available-legend">Available</span>
+                    <span className="legend-item occupied-legend">Reserved</span>
+                    <span className="legend-note">Round = table (max 4) &nbsp;|&nbsp; Rectangle = booth (max 6)</span>
+                </div>
+
+                {/* BAR */}
+                <div className="bar-area">
+                    <span className="bar-label">Bar</span>
+                    <div className="bar-seats">
+                        {[...Array(17)].map((_, i) => {
+                            const seatNum = i + 1;
+                            const reserved = reservations.find(
+                                (r) => r.tableNumber === `bar-${seatNum}`
+                            );
+                            return (
+                                <div
+                                    key={seatNum}
+                                    className={`bar-seat ${reserved ? "bar-seat-reserved" : "bar-seat-available"}`}
+                                    title={reserved ? `Reserved: ${reserved.customerName}` : `Seat ${seatNum} available`}
+                                />
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* TABLES */}
+                <div className="seating-layout">
                     {[...Array(20)].map((_, index) => {
                         const tableNum = index + 1;
-
                         const reservation = reservations.find(
                             (r) => Number(r.tableNumber) === tableNum
                         );
+                        const isBooth = tableNum % 5 === 0;
+                        const isSelected = selectedTable === tableNum;
 
                         return (
                             <div
                                 key={tableNum}
-                                onClick={() => setTableNumber(tableNum)}
-                                className={`seat-box ${reservation ? "occupied" : "available"}`}
+                                className={`table-wrapper ${isBooth ? "large" : ""} ${reservation ? "occupied" : "available"}`}
+                                onClick={() => {
+                                    setTableNumber(tableNum);
+                                    setSelectedTable(prev => prev === tableNum ? null : tableNum);
+                                }}
                             >
-                                <h4>Table {tableNum}</h4>
+                                <div className="table-shape">
+                                    <span>{tableNum}</span>
+                                </div>
 
-                                {reservation ? (
-                                    <p>{reservation.customerName}</p>
-                                ) : (
-                                    <p>Available</p>
+                                {reservation && (
+                                    <p className="table-label">{reservation.customerName}</p>
+                                )}
+
+                                {reservation && isSelected && (
+                                    <div className="reserved-tag">
+                                        Party of {reservation.partySize}
+                                    </div>
                                 )}
                             </div>
                         );
