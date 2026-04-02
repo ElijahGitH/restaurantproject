@@ -121,7 +121,7 @@
 .bar-seats {
     display: flex;
     align-items: center;
-    gap: 60px;
+    gap: 50px;
     flex-wrap: nowrap;
     transform: translateY(50%);
 }
