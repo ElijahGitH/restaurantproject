@@ -1,6 +1,6 @@
 Make sure to have MongoDB installed, Node.js, and MongoDB Compass for GUI.
 
-1. Navigate to the server folder and open the terminal.
+1. Navigate to the server folder, right click the folder, and open a terminal.
 
 2. make a .env file in the server folder with: 
 
