@@ -12,12 +12,6 @@ PORT=5000
 
 4. npm start
 
-FOR MongoDB Compass:
-
-Open the app, then paste this link in the connection box: 
-
-mongodb://localhost:27017
-
 To access the appplication:
 1. Navigate to the client folder and open another terminal window.
 
@@ -26,6 +20,12 @@ To access the appplication:
 3. npm run dev
 
 4. Navigate to the link that pops up in the terminal in a web browser. Will look like: http://localhost:5173/
+
+FOR MongoDB Compass:
+
+Open the app, then paste this link in the connection box: 
+
+mongodb://localhost:27017
 
 The collections for mongodb are: menuItems, users, orders, reservations, tables.
 
