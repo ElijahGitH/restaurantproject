@@ -2,7 +2,7 @@ Make sure to have MongoDB installed, Node.js, and MongoDB Compass for GUI to see
 
 1. Navigate to the server folder, right click the folder, and open a terminal.
 
-2. make a .env file in the server folder with: 
+2. Make a .env file in the server folder with: 
 
 MONGO_URI=mongodb://localhost:27017/restaurant
 JWT_SECRET=alosdfyh9h13fjalkds
