@@ -8,11 +8,9 @@ MONGO_URI=mongodb://localhost:27017/restaurant
 JWT_SECRET=alosdfyh9h13fjalkds
 PORT=5000
 
-3. npm install
+3. In terminal: npm install
 
 4. npm start
-
-5. npm start
 
 FOR MongoDB Compass:
 
