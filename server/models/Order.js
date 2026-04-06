@@ -11,7 +11,20 @@ const orderSchema = new mongoose.Schema({
       menuItemId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "MenuItem",
-        required: true
+        required: false
+      },
+      itemName: {
+        type: String,
+        required: false
+      },
+      itemSource: {
+        type: String,
+        enum: ["static", "seasonal"],
+        default: "static"
+      },
+      itemPrice: {
+        type: Number,
+        required: false
       },
       quantity: {
         type: Number,

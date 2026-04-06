@@ -12,6 +12,9 @@ const Reservation = require("./models/Reservation");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "CasaDelSol123";
+
 app.use(cors());
 app.use(express.json());
 
@@ -34,10 +37,14 @@ app.get("/", (req, res) => {
 
 app.post("/api/auth/register", async (req, res) => {
   try {
-    const { username, password, role } = req.body;
+    const { username, password } = req.body;
 
-    if (!username || !password || !role) {
+    if (!username || !password) {
       return res.status(400).json({ message: "Please fill in all fields" });
+    }
+
+    if (username.toLowerCase() === ADMIN_USERNAME.toLowerCase()) {
+      return res.status(400).json({ message: "That username is reserved" });
     }
 
     const existingUser = await User.findOne({ username: username });
@@ -49,7 +56,7 @@ app.post("/api/auth/register", async (req, res) => {
     const newUser = new User({
       username: username,
       password: password,
-      role: role
+      role: "user"
     });
 
     await newUser.save();
@@ -67,6 +74,14 @@ app.post("/api/auth/register", async (req, res) => {
 app.post("/api/auth/login", async (req, res) => {
   try {
     const { username, password } = req.body;
+
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+      return res.json({
+        userId: "admin-local",
+        username: ADMIN_USERNAME,
+        role: "admin"
+      });
+    }
 
     const foundUser = await User.findOne({ username: username });
 
@@ -112,7 +127,7 @@ app.get("/api/admin/stats", async (req, res) => {
 });
 
 /* ------------------------------ */
-/* Menu item routes */
+/* Seasonal menu item routes */
 /* ------------------------------ */
 
 app.get("/api/menuitems", async (req, res) => {
@@ -138,31 +153,6 @@ app.post("/api/menuitems", async (req, res) => {
     res.status(201).json(newMenuItem);
   } catch (error) {
     res.status(500).json({ message: "Could not add menu item" });
-  }
-});
-
-app.put("/api/menuitems/:id", async (req, res) => {
-  try {
-    const menuItemId = req.params.id;
-    const { itemName, category, price } = req.body;
-
-    const updatedMenuItem = await MenuItem.findByIdAndUpdate(
-      menuItemId,
-      {
-        itemName: itemName,
-        category: category,
-        price: Number(price)
-      },
-      { new: true }
-    );
-
-    if (!updatedMenuItem) {
-      return res.status(404).json({ message: "Menu item not found" });
-    }
-
-    res.json(updatedMenuItem);
-  } catch (error) {
-    res.status(500).json({ message: "Could not update menu item" });
   }
 });
 
@@ -206,11 +196,15 @@ app.post("/api/reservations", async (req, res) => {
       approvalStatus
     } = req.body;
 
+    if (!customerName || !tableNumber || !partySize || !reservationTime) {
+      return res.status(400).json({ message: "Please fill in all reservation fields" });
+    }
+
     const newReservation = new Reservation({
       userId: userId,
-      customerName: customerName,
+      customerName: customerName.trim(),
       tableNumber: String(tableNumber),
-      partySize: partySize ? Number(partySize) : undefined,
+      partySize: Number(partySize),
       reservationTime: reservationTime,
       approvalStatus: approvalStatus || "Pending"
     });
@@ -233,12 +227,16 @@ app.put("/api/reservations/:id", async (req, res) => {
       approvalStatus
     } = req.body;
 
+    if (!customerName || !tableNumber || !partySize || !reservationTime) {
+      return res.status(400).json({ message: "Please fill in all reservation fields" });
+    }
+
     const updatedReservation = await Reservation.findByIdAndUpdate(
       reservationId,
       {
-        customerName: customerName,
+        customerName: customerName.trim(),
         tableNumber: String(tableNumber),
-        partySize: partySize ? Number(partySize) : undefined,
+        partySize: Number(partySize),
         reservationTime: reservationTime,
         approvalStatus: approvalStatus
       },
@@ -312,13 +310,24 @@ app.get("/api/my/reservations/:userId", async (req, res) => {
 
 app.post("/api/my/reservations", async (req, res) => {
   try {
-    const { userId, customerName, tableNumber, reservationTime } = req.body;
+    const {
+      userId,
+      customerName,
+      tableNumber,
+      reservationTime,
+      partySize
+    } = req.body;
+
+    if (!customerName || !tableNumber || !partySize || !reservationTime) {
+      return res.status(400).json({ message: "Please fill in all reservation fields" });
+    }
 
     const newReservation = new Reservation({
       userId: userId,
-      customerName: customerName,
+      customerName: customerName.trim(),
       tableNumber: String(tableNumber),
       reservationTime: reservationTime,
+      partySize: Number(partySize),
       approvalStatus: "Pending"
     });
 
@@ -332,14 +341,25 @@ app.post("/api/my/reservations", async (req, res) => {
 app.put("/api/my/reservations/:id", async (req, res) => {
   try {
     const reservationId = req.params.id;
-    const { userId, customerName, tableNumber, reservationTime } = req.body;
+    const {
+      userId,
+      customerName,
+      tableNumber,
+      reservationTime,
+      partySize
+    } = req.body;
+
+    if (!customerName || !tableNumber || !partySize || !reservationTime) {
+      return res.status(400).json({ message: "Please fill in all reservation fields" });
+    }
 
     const updatedReservation = await Reservation.findOneAndUpdate(
       { _id: reservationId, userId: userId },
       {
-        customerName: customerName,
+        customerName: customerName.trim(),
         tableNumber: String(tableNumber),
-        reservationTime: reservationTime
+        reservationTime: reservationTime,
+        partySize: Number(partySize)
       },
       { new: true }
     );
@@ -382,7 +402,7 @@ app.get("/api/orders", async (req, res) => {
   try {
     const orders = await Order.find()
       .populate("userId", "username")
-      .populate("items.menuItemId", "itemName");
+      .populate("items.menuItemId", "itemName price");
 
     res.json(orders);
   } catch (error) {
@@ -401,7 +421,7 @@ app.put("/api/orders/:id/status", async (req, res) => {
       { new: true }
     )
       .populate("userId", "username")
-      .populate("items.menuItemId", "itemName");
+      .populate("items.menuItemId", "itemName price");
 
     if (!updatedOrder) {
       return res.status(404).json({ message: "Order not found" });
@@ -438,7 +458,7 @@ app.get("/api/my/orders/:userId", async (req, res) => {
     const userId = req.params.userId;
 
     const orders = await Order.find({ userId: userId })
-      .populate("items.menuItemId", "itemName")
+      .populate("items.menuItemId", "itemName price")
       .sort({ _id: -1 });
 
     res.json(orders);
@@ -451,9 +471,44 @@ app.post("/api/my/orders", async (req, res) => {
   try {
     const { userId, items } = req.body;
 
+    const cleanedItems = (items || [])
+      .map((oneItem) => {
+        if (oneItem.menuItemId) {
+          return {
+            menuItemId: oneItem.menuItemId,
+            itemName: oneItem.itemName ? oneItem.itemName.trim() : undefined,
+            itemSource: "seasonal",
+            itemPrice:
+              oneItem.itemPrice !== undefined && oneItem.itemPrice !== null
+                ? Number(oneItem.itemPrice)
+                : undefined,
+            quantity: Number(oneItem.quantity)
+          };
+        }
+
+        if (oneItem.itemName) {
+          return {
+            itemName: oneItem.itemName.trim(),
+            itemSource: "static",
+            itemPrice:
+              oneItem.itemPrice !== undefined && oneItem.itemPrice !== null
+                ? Number(oneItem.itemPrice)
+                : undefined,
+            quantity: Number(oneItem.quantity)
+          };
+        }
+
+        return null;
+      })
+      .filter(Boolean);
+
+    if (cleanedItems.length === 0) {
+      return res.status(400).json({ message: "No valid order items were sent" });
+    }
+
     const newOrder = new Order({
       userId: userId,
-      items: items,
+      items: cleanedItems,
       status: "Pending"
     });
 
@@ -461,7 +516,7 @@ app.post("/api/my/orders", async (req, res) => {
 
     const savedOrder = await Order.findById(newOrder._id).populate(
       "items.menuItemId",
-      "itemName"
+      "itemName price"
     );
 
     res.status(201).json(savedOrder);

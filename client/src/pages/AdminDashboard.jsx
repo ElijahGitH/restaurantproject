@@ -18,29 +18,19 @@ function AdminDashboard() {
 
   const [pageMessage, setPageMessage] = useState("");
 
-  /* ------------------------------ */
-  /* Menu item states */
-  /* ------------------------------ */
   const [itemName, setItemName] = useState("");
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
   const [menuItems, setMenuItems] = useState([]);
-  const [editMenuItemId, setEditMenuItemId] = useState("");
 
-  /* ------------------------------ */
-  /* Reservation states */
-  /* ------------------------------ */
   const [customerName, setCustomerName] = useState("");
   const [tableNumber, setTableNumber] = useState("");
   const [partySize, setPartySize] = useState("");
   const [reservationTime, setReservationTime] = useState("");
   const [reservations, setReservations] = useState([]);
   const [editReservationId, setEditReservationId] = useState("");
-  const [selectedTable, setSelectedTable] = useState(null);
+  const [selectedTable, setSelectedTable] = useState("");
 
-  /* ------------------------------ */
-  /* Order states */
-  /* ------------------------------ */
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
@@ -50,9 +40,6 @@ function AdminDashboard() {
     loadOrders();
   }, []);
 
-  /* ------------------------------ */
-  /* Dashboard data loading */
-  /* ------------------------------ */
   function loadAdminStats() {
     fetch("http://localhost:5000/api/admin/stats")
       .then((response) => response.json())
@@ -71,7 +58,7 @@ function AdminDashboard() {
         setMenuItems(data);
       })
       .catch(() => {
-        setPageMessage("Could not load menu items");
+        setPageMessage("Could not load seasonal menu items");
       });
   }
 
@@ -97,22 +84,15 @@ function AdminDashboard() {
       });
   }
 
-  /* ------------------------------ */
-  /* Logout */
-  /* ------------------------------ */
   function logoutUser() {
     localStorage.clear();
     navigate("/");
   }
 
-  /* ------------------------------ */
-  /* Menu item functions */
-  /* ------------------------------ */
   function clearMenuItemForm() {
     setItemName("");
     setCategory("");
     setPrice("");
-    setEditMenuItemId("");
   }
 
   function saveMenuItem(event) {
@@ -124,51 +104,23 @@ function AdminDashboard() {
       price: price
     };
 
-    if (editMenuItemId !== "") {
-      fetch(`http://localhost:5000/api/menuitems/${editMenuItemId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(menuItemData)
+    fetch("http://localhost:5000/api/menuitems", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(menuItemData)
+    })
+      .then((response) => response.json())
+      .then(() => {
+        clearMenuItemForm();
+        loadMenuItems();
+        loadAdminStats();
+        setPageMessage("Seasonal menu item added");
       })
-        .then((response) => response.json())
-        .then(() => {
-          clearMenuItemForm();
-          loadMenuItems();
-          loadAdminStats();
-          setPageMessage("Menu item updated");
-        })
-        .catch(() => {
-          setPageMessage("Could not update menu item");
-        });
-    } else {
-      fetch("http://localhost:5000/api/menuitems", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(menuItemData)
-      })
-        .then((response) => response.json())
-        .then(() => {
-          clearMenuItemForm();
-          loadMenuItems();
-          loadAdminStats();
-          setPageMessage("Menu item added");
-        })
-        .catch(() => {
-          setPageMessage("Could not add menu item");
-        });
-    }
-  }
-
-  function startEditMenuItem(oneMenuItem) {
-    setItemName(oneMenuItem.itemName);
-    setCategory(oneMenuItem.category);
-    setPrice(oneMenuItem.price);
-    setEditMenuItemId(oneMenuItem._id);
-    setPageMessage("Editing menu item");
+      .catch(() => {
+        setPageMessage("Could not add seasonal menu item");
+      });
   }
 
   function deleteMenuItem(menuItemId) {
@@ -179,23 +131,96 @@ function AdminDashboard() {
       .then(() => {
         loadMenuItems();
         loadAdminStats();
-        setPageMessage("Menu item deleted");
+        setPageMessage("Seasonal menu item deleted");
       })
       .catch(() => {
-        setPageMessage("Could not delete menu item");
+        setPageMessage("Could not delete seasonal menu item");
       });
   }
 
-  /* ------------------------------ */
-  /* Reservation functions */
-  /* ------------------------------ */
+  function formatReservationTime(value) {
+    if (!value) {
+      return "";
+    }
+
+    const dateObject = new Date(value);
+
+    if (Number.isNaN(dateObject.getTime())) {
+      return value;
+    }
+
+    return dateObject.toLocaleString([], {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit"
+    });
+  }
+
+  function formatForDateTimeLocal(value) {
+    if (!value) {
+      return "";
+    }
+
+    const dateObject = new Date(value);
+
+    if (Number.isNaN(dateObject.getTime())) {
+      return value.slice(0, 16);
+    }
+
+    const year = dateObject.getFullYear();
+    const month = String(dateObject.getMonth() + 1).padStart(2, "0");
+    const day = String(dateObject.getDate()).padStart(2, "0");
+    const hour = String(dateObject.getHours()).padStart(2, "0");
+    const minute = String(dateObject.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day}T${hour}:${minute}`;
+  }
+
+  function formatPrice(value) {
+    if (value === undefined || value === null || value === "") {
+      return "0.00";
+    }
+
+    return Number(value).toFixed(2);
+  }
+
+  function isBlockingReservation(oneReservation) {
+    return oneReservation && oneReservation.approvalStatus !== "Denied";
+  }
+
+  function getSavedOrderItemName(oneItem) {
+    if (oneItem.itemName) {
+      return oneItem.itemName;
+    }
+
+    if (oneItem.menuItemId && oneItem.menuItemId.itemName) {
+      return oneItem.menuItemId.itemName;
+    }
+
+    return "Unknown Item";
+  }
+
+  function getSavedOrderItemPrice(oneItem) {
+    if (oneItem.itemPrice !== undefined && oneItem.itemPrice !== null) {
+      return Number(oneItem.itemPrice);
+    }
+
+    if (oneItem.menuItemId && oneItem.menuItemId.price !== undefined) {
+      return Number(oneItem.menuItemId.price);
+    }
+
+    return 0;
+  }
+
   function clearReservationForm() {
     setCustomerName("");
     setTableNumber("");
     setPartySize("");
     setReservationTime("");
     setEditReservationId("");
-    setSelectedTable(null);
+    setSelectedTable("");
   }
 
   function saveReservation(event) {
@@ -259,7 +284,7 @@ function AdminDashboard() {
     setCustomerName(oneReservation.customerName);
     setTableNumber(String(oneReservation.tableNumber));
     setPartySize(oneReservation.partySize ? String(oneReservation.partySize) : "");
-    setReservationTime(oneReservation.reservationTime);
+    setReservationTime(formatForDateTimeLocal(oneReservation.reservationTime));
     setEditReservationId(oneReservation._id);
     setSelectedTable(String(oneReservation.tableNumber));
     setPageMessage("Editing reservation");
@@ -300,9 +325,6 @@ function AdminDashboard() {
       });
   }
 
-  /* ------------------------------ */
-  /* Order functions */
-  /* ------------------------------ */
   function updateOrderStatus(orderId, newStatus) {
     fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
       method: "PUT",
@@ -360,7 +382,7 @@ function AdminDashboard() {
         </div>
 
         <div className="dashboard-card">
-          <h3>Total Menu Items</h3>
+          <h3>Total Seasonal Items</h3>
           <p>{adminStats.totalMenuItems}</p>
         </div>
 
@@ -381,7 +403,7 @@ function AdminDashboard() {
       </div>
 
       <div className="dashboard-section">
-        <h2>Menu Item Form</h2>
+        <h2>Seasonal Menu Form</h2>
 
         <form onSubmit={saveMenuItem} className="dashboard-form">
           <input
@@ -405,24 +427,12 @@ function AdminDashboard() {
             onChange={(event) => setPrice(event.target.value)}
           />
 
-          <button type="submit">
-            {editMenuItemId !== "" ? "Update Item" : "Add Item"}
-          </button>
-
-          {editMenuItemId !== "" && (
-            <button
-              type="button"
-              className="cancel-button"
-              onClick={clearMenuItemForm}
-            >
-              Cancel Edit
-            </button>
-          )}
+          <button type="submit">Add Seasonal Item</button>
         </form>
       </div>
 
       <div className="dashboard-section">
-        <h2>Menu Items</h2>
+        <h2>Seasonal Menu Items</h2>
 
         <table className="dashboard-table">
           <thead>
@@ -430,7 +440,6 @@ function AdminDashboard() {
               <th>Item Name</th>
               <th>Category</th>
               <th>Price</th>
-              <th>Edit</th>
               <th>Delete</th>
             </tr>
           </thead>
@@ -440,12 +449,7 @@ function AdminDashboard() {
               <tr key={oneMenuItem._id}>
                 <td>{oneMenuItem.itemName}</td>
                 <td>{oneMenuItem.category}</td>
-                <td>${oneMenuItem.price}</td>
-                <td>
-                  <button onClick={() => startEditMenuItem(oneMenuItem)}>
-                    Edit
-                  </button>
-                </td>
+                <td>${formatPrice(oneMenuItem.price)}</td>
                 <td>
                   <button onClick={() => deleteMenuItem(oneMenuItem._id)}>
                     Delete
@@ -521,9 +525,12 @@ function AdminDashboard() {
           <div className="bar-seats">
             {[...Array(17)].map((_, i) => {
               const seatNum = i + 21;
-              const reserved = reservations.find(
+
+              const foundReservation = reservations.find(
                 (r) => String(r.tableNumber) === `bar-${seatNum}`
               );
+
+              const reserved = isBlockingReservation(foundReservation);
 
               return (
                 <div
@@ -533,7 +540,7 @@ function AdminDashboard() {
                   }`}
                   title={
                     reserved
-                      ? `Seat ${seatNum} — Reserved: ${reserved.customerName}`
+                      ? `Seat ${seatNum} — Reserved: ${foundReservation.customerName}`
                       : `Seat ${seatNum} — Available`
                   }
                   onClick={() => {
@@ -551,9 +558,15 @@ function AdminDashboard() {
         <div className="seating-layout">
           {[...Array(20)].map((_, index) => {
             const tableNum = index + 1;
-            const reservation = reservations.find(
+
+            const foundReservation = reservations.find(
               (r) => String(r.tableNumber) === String(tableNum)
             );
+
+            const reservation = isBlockingReservation(foundReservation)
+              ? foundReservation
+              : null;
+
             const isBooth = tableNum % 5 === 0;
             const isSelected = selectedTable === String(tableNum);
 
@@ -566,7 +579,7 @@ function AdminDashboard() {
                 onClick={() => {
                   setTableNumber(String(tableNum));
                   setSelectedTable((prev) =>
-                    prev === String(tableNum) ? null : String(tableNum)
+                    prev === String(tableNum) ? "" : String(tableNum)
                   );
                 }}
               >
@@ -595,8 +608,8 @@ function AdminDashboard() {
         <table className="dashboard-table">
           <thead>
             <tr>
-              <th>User</th>
-              <th>Customer Name</th>
+              <th>Account Username</th>
+              <th>Reservation Name</th>
               <th>Table Number</th>
               <th>Party Size</th>
               <th>Reservation Time</th>
@@ -615,7 +628,7 @@ function AdminDashboard() {
                 <td>{oneReservation.customerName}</td>
                 <td>{oneReservation.tableNumber}</td>
                 <td>{oneReservation.partySize}</td>
-                <td>{oneReservation.reservationTime}</td>
+                <td>{formatReservationTime(oneReservation.reservationTime)}</td>
                 <td>
                   <div>
                     <p>{oneReservation.approvalStatus}</p>
@@ -674,7 +687,8 @@ function AdminDashboard() {
                 <td>
                   {oneOrder.items.map((oneItem, index) => (
                     <div key={index}>
-                      {oneItem.menuItemId ? oneItem.menuItemId.itemName : "Unknown Item"} x{" "}
+                      {getSavedOrderItemName(oneItem)} - $
+                      {formatPrice(getSavedOrderItemPrice(oneItem))} x{" "}
                       {oneItem.quantity}
                     </div>
                   ))}

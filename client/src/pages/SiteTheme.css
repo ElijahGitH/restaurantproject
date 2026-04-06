@@ -379,3 +379,7 @@ h2 {
 .table-wrapper.selected .table-shape {
   background-color: #d6a63c;
 }
+
+.menu-card-spacing {
+  margin-bottom: 10px;
+}

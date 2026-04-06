@@ -4,11 +4,11 @@ import "./SiteTheme.css";
 
 function ReservationsPage() {
   const userId = localStorage.getItem("userId") || "";
-  const username = localStorage.getItem("username") || "Guest";
 
   const [pageMessage, setPageMessage] = useState("");
-  const [customerName, setCustomerName] = useState(username);
+  const [customerName, setCustomerName] = useState("");
   const [tableNumber, setTableNumber] = useState("");
+  const [partySize, setPartySize] = useState("");
   const [reservationTime, setReservationTime] = useState("");
   const [myReservations, setMyReservations] = useState([]);
   const [allReservations, setAllReservations] = useState([]);
@@ -85,9 +85,14 @@ function ReservationsPage() {
     return `${year}-${month}-${day}T${hour}:${minute}`;
   }
 
+  function isBlockingReservation(oneReservation) {
+    return oneReservation && oneReservation.approvalStatus !== "Denied";
+  }
+
   function clearReservationForm() {
-    setCustomerName(username);
+    setCustomerName("");
     setTableNumber("");
+    setPartySize("");
     setReservationTime("");
     setEditReservationId("");
     setSelectedTable("");
@@ -101,11 +106,32 @@ function ReservationsPage() {
       return;
     }
 
+    if (customerName.trim() === "") {
+      setPageMessage("Please enter the customer name");
+      return;
+    }
+
+    if (tableNumber.trim() === "") {
+      setPageMessage("Please choose a table or bar seat");
+      return;
+    }
+
+    if (partySize === "") {
+      setPageMessage("Please enter a party size");
+      return;
+    }
+
+    if (reservationTime === "") {
+      setPageMessage("Please choose a reservation time");
+      return;
+    }
+
     const reservationData = {
       userId: userId,
-      customerName: customerName,
+      customerName: customerName.trim(),
       tableNumber: tableNumber,
-      reservationTime: reservationTime
+      reservationTime: reservationTime,
+      partySize: partySize
     };
 
     if (editReservationId !== "") {
@@ -150,6 +176,7 @@ function ReservationsPage() {
   function startEditReservation(oneReservation) {
     setCustomerName(oneReservation.customerName);
     setTableNumber(String(oneReservation.tableNumber));
+    setPartySize(oneReservation.partySize ? String(oneReservation.partySize) : "");
     setReservationTime(formatForDateTimeLocal(oneReservation.reservationTime));
     setEditReservationId(oneReservation._id);
     setSelectedTable(String(oneReservation.tableNumber));
@@ -199,6 +226,14 @@ function ReservationsPage() {
             />
 
             <input
+              type="number"
+              min="1"
+              placeholder="Party Size"
+              value={partySize}
+              onChange={(event) => setPartySize(event.target.value)}
+            />
+
+            <input
               type="datetime-local"
               value={reservationTime}
               onChange={(event) => setReservationTime(event.target.value)}
@@ -236,9 +271,12 @@ function ReservationsPage() {
               {[...Array(17)].map((_, index) => {
                 const seatNum = index + 21;
                 const seatValue = `bar-${seatNum}`;
-                const reserved = allReservations.find(
+
+                const foundReservation = allReservations.find(
                   (oneReservation) => String(oneReservation.tableNumber) === seatValue
                 );
+
+                const reserved = isBlockingReservation(foundReservation);
                 const isSelected = selectedTable === seatValue;
 
                 return (
@@ -270,10 +308,16 @@ function ReservationsPage() {
             {[...Array(20)].map((_, index) => {
               const tableNum = index + 1;
               const tableValue = String(tableNum);
-              const reservationFound = allReservations.find(
+
+              const foundReservation = allReservations.find(
                 (oneReservation) =>
                   String(oneReservation.tableNumber) === tableValue
               );
+
+              const reservationFound = isBlockingReservation(foundReservation)
+                ? foundReservation
+                : null;
+
               const isBooth = tableNum % 5 === 0;
               const isSelected = selectedTable === tableValue;
 
@@ -314,6 +358,7 @@ function ReservationsPage() {
               <tr>
                 <th>Customer Name</th>
                 <th>Table Number</th>
+                <th>Party Size</th>
                 <th>Reservation Time</th>
                 <th>Approval</th>
                 <th>Edit</th>
@@ -326,6 +371,7 @@ function ReservationsPage() {
                 <tr key={oneReservation._id}>
                   <td>{oneReservation.customerName}</td>
                   <td>{oneReservation.tableNumber}</td>
+                  <td>{oneReservation.partySize}</td>
                   <td>{formatReservationTime(oneReservation.reservationTime)}</td>
                   <td>{oneReservation.approvalStatus}</td>
                   <td>
