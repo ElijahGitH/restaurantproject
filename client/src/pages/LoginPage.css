@@ -1,0 +1,114 @@
+/* Whole page background */
+.login-page {
+  min-height: 100vh;
+  background-color: #f5efe6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  font-family: Arial, sans-serif;
+}
+
+/* Main login container */
+.login-box {
+  width: 100%;
+  max-width: 500px;
+  background-color: white;
+  border: 1px solid #d8cfc4;
+  border-radius: 12px;
+  padding: 35px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Top heading area */
+.login-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.login-header h1 {
+  margin-bottom: 10px;
+  color: #1f3b57;
+  font-size: 42px;
+}
+
+.login-header p {
+  color: #6b6b6b;
+  font-size: 16px;
+}
+
+/* Login and register buttons */
+.login-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.login-toggle button {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #cccccc;
+  background-color: #f2f2f2;
+  color: #333333;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.login-toggle button:hover {
+  background-color: #e6e6e6;
+}
+
+/* Active toggle button */
+.active-button {
+  background-color: #1f3b57 !important;
+  color: white !important;
+  border: none !important;
+}
+
+/* Form area */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Inputs and select */
+.login-form input,
+.login-form select {
+  padding: 12px;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+/* Main action button */
+.main-button {
+  background-color: #8b3a3a;
+  color: white;
+  border: none;
+  padding: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.main-button:hover {
+  background-color: #6f2f2f;
+}
+
+/* Message area */
+.login-message {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #8b1e1e;
+  font-weight: bold;
+}
+
+/* Bottom note */
+.login-note {
+  margin-top: 20px;
+  text-align: center;
+  color: #777777;
+  font-size: 14px;
+}
