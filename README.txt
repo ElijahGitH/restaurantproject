@@ -30,3 +30,7 @@ To access the appplication:
 4. Navigate to http://localhost:5173/admin in a web browser.
 
 The collections for mongodb are: menuItems, users, orders, reservations, tables.
+
+The login for the admin user is:
+username: admin
+password: CasaDelSol123
