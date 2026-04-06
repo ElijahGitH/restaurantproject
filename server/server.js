@@ -178,10 +178,13 @@ app.delete("/api/menuitems/:id", async (req, res) => {
 
 app.get("/api/reservations", async (req, res) => {
   try {
-    const reservations = await Reservation.find().populate("userId", "username");
+    const reservations = await Reservation.find()
+      .populate("userId", "username")
+      .sort({ reservationTime: 1 });
+
     res.json(reservations);
   } catch (error) {
-    res.status(500).json({ message: "Error getting reservations" });
+    res.status(500).json({ message: "Could not load reservations" });
   }
 });
 
@@ -200,14 +203,19 @@ app.post("/api/reservations", async (req, res) => {
       return res.status(400).json({ message: "Please fill in all reservation fields" });
     }
 
-    const newReservation = new Reservation({
-      userId: userId,
+    const newReservationData = {
       customerName: customerName.trim(),
       tableNumber: String(tableNumber),
       partySize: Number(partySize),
       reservationTime: reservationTime,
       approvalStatus: approvalStatus || "Pending"
-    });
+    };
+
+    if (userId && mongoose.Types.ObjectId.isValid(userId)) {
+      newReservationData.userId = userId;
+    }
+
+    const newReservation = new Reservation(newReservationData);
 
     await newReservation.save();
     res.status(201).json(newReservation);
