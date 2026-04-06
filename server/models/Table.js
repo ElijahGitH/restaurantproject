@@ -1,26 +1,24 @@
-// Import mongoose
 const mongoose = require("mongoose");
 
-// Make the table schema
 const tableSchema = new mongoose.Schema({
-  // Table number like 1, 2, 3, 4
   tableNumber: {
-    type: Number,
-    required: true
+    type: String,
+    required: true,
+    unique: true
   },
-
-  // How many seats the table has
   seats: {
     type: Number,
     required: true
   },
-
-  // If the table is open right now
+  tableType: {
+    type: String,
+    enum: ["table", "booth", "bar"],
+    required: true
+  },
   isAvailable: {
     type: Boolean,
     default: true
   }
 });
 
-// Export the table model
 module.exports = mongoose.model("Table", tableSchema);

@@ -8,6 +8,7 @@ const User = require("./models/User");
 const MenuItem = require("./models/MenuItem");
 const Order = require("./models/Order");
 const Reservation = require("./models/Reservation");
+const Table = require("./models/Table");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,10 +19,58 @@ const ADMIN_PASSWORD = "CasaDelSol123";
 app.use(cors());
 app.use(express.json());
 
+async function seedTables() {
+  const existingTables = await Table.countDocuments();
+
+  if (existingTables > 0) {
+    return;
+  }
+
+  const tablesToInsert = [];
+
+  for (let i = 1; i <= 20; i++) {
+    tablesToInsert.push({
+      tableNumber: String(i),
+      seats: i % 5 === 0 ? 6 : 4,
+      tableType: i % 5 === 0 ? "booth" : "table",
+      isAvailable: true
+    });
+  }
+
+  for (let i = 21; i <= 37; i++) {
+    tablesToInsert.push({
+      tableNumber: `bar-${i}`,
+      seats: 1,
+      tableType: "bar",
+      isAvailable: true
+    });
+  }
+
+  await Table.insertMany(tablesToInsert);
+  console.log("Tables seeded");
+}
+
+async function syncTableAvailability(tableNumber) {
+  if (!tableNumber) {
+    return;
+  }
+
+  const activeReservations = await Reservation.countDocuments({
+    tableNumber: String(tableNumber),
+    approvalStatus: { $ne: "Denied" }
+  });
+
+  await Table.findOneAndUpdate(
+    { tableNumber: String(tableNumber) },
+    { isAvailable: activeReservations === 0 }
+  );
+}
+
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => {
+  .then(async () => {
     console.log("MongoDB connected");
+    await seedTables();
   })
   .catch((error) => {
     console.log("MongoDB connection error:", error);
@@ -113,13 +162,14 @@ app.get("/api/admin/stats", async (req, res) => {
     const totalMenuItems = await MenuItem.countDocuments();
     const totalOrders = await Order.countDocuments();
     const totalReservations = await Reservation.countDocuments();
+    const totalTables = await Table.countDocuments();
 
     res.json({
       totalUsers: totalUsers,
       totalMenuItems: totalMenuItems,
       totalOrders: totalOrders,
       totalReservations: totalReservations,
-      totalTables: 20
+      totalTables: totalTables
     });
   } catch (error) {
     res.status(500).json({ message: "Could not load admin stats" });
@@ -173,6 +223,19 @@ app.delete("/api/menuitems/:id", async (req, res) => {
 });
 
 /* ------------------------------ */
+/* Table routes */
+/* ------------------------------ */
+
+app.get("/api/tables", async (req, res) => {
+  try {
+    const tables = await Table.find().sort({ tableNumber: 1 });
+    res.json(tables);
+  } catch (error) {
+    res.status(500).json({ message: "Could not load tables" });
+  }
+});
+
+/* ------------------------------ */
 /* Admin reservation routes */
 /* ------------------------------ */
 
@@ -218,6 +281,8 @@ app.post("/api/reservations", async (req, res) => {
     const newReservation = new Reservation(newReservationData);
 
     await newReservation.save();
+    await syncTableAvailability(tableNumber);
+
     res.status(201).json(newReservation);
   } catch (error) {
     res.status(500).json({ message: "Error adding reservation" });
@@ -239,6 +304,12 @@ app.put("/api/reservations/:id", async (req, res) => {
       return res.status(400).json({ message: "Please fill in all reservation fields" });
     }
 
+    const oldReservation = await Reservation.findById(reservationId);
+
+    if (!oldReservation) {
+      return res.status(404).json({ message: "Reservation not found" });
+    }
+
     const updatedReservation = await Reservation.findByIdAndUpdate(
       reservationId,
       {
@@ -251,9 +322,8 @@ app.put("/api/reservations/:id", async (req, res) => {
       { new: true }
     );
 
-    if (!updatedReservation) {
-      return res.status(404).json({ message: "Reservation not found" });
-    }
+    await syncTableAvailability(oldReservation.tableNumber);
+    await syncTableAvailability(tableNumber);
 
     res.json(updatedReservation);
   } catch (error) {
@@ -270,6 +340,8 @@ app.delete("/api/reservations/:id", async (req, res) => {
     if (!deletedReservation) {
       return res.status(404).json({ message: "Reservation not found" });
     }
+
+    await syncTableAvailability(deletedReservation.tableNumber);
 
     res.json({ message: "Reservation deleted" });
   } catch (error) {
@@ -291,6 +363,8 @@ app.put("/api/reservations/:id/approval", async (req, res) => {
     if (!updatedReservation) {
       return res.status(404).json({ message: "Reservation not found" });
     }
+
+    await syncTableAvailability(updatedReservation.tableNumber);
 
     res.json(updatedReservation);
   } catch (error) {
@@ -340,6 +414,8 @@ app.post("/api/my/reservations", async (req, res) => {
     });
 
     await newReservation.save();
+    await syncTableAvailability(tableNumber);
+
     res.status(201).json(newReservation);
   } catch (error) {
     res.status(500).json({ message: "Could not add your reservation" });
@@ -361,6 +437,15 @@ app.put("/api/my/reservations/:id", async (req, res) => {
       return res.status(400).json({ message: "Please fill in all reservation fields" });
     }
 
+    const oldReservation = await Reservation.findOne({
+      _id: reservationId,
+      userId: userId
+    });
+
+    if (!oldReservation) {
+      return res.status(404).json({ message: "Reservation not found" });
+    }
+
     const updatedReservation = await Reservation.findOneAndUpdate(
       { _id: reservationId, userId: userId },
       {
@@ -372,9 +457,8 @@ app.put("/api/my/reservations/:id", async (req, res) => {
       { new: true }
     );
 
-    if (!updatedReservation) {
-      return res.status(404).json({ message: "Reservation not found" });
-    }
+    await syncTableAvailability(oldReservation.tableNumber);
+    await syncTableAvailability(tableNumber);
 
     res.json(updatedReservation);
   } catch (error) {
@@ -395,6 +479,8 @@ app.delete("/api/my/reservations/:id/:userId", async (req, res) => {
     if (!deletedReservation) {
       return res.status(404).json({ message: "Reservation not found" });
     }
+
+    await syncTableAvailability(deletedReservation.tableNumber);
 
     res.json({ message: "Your reservation was deleted" });
   } catch (error) {
