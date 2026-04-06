@@ -1,4 +1,4 @@
-Make sure to have MongoDB installed, Node.js, and MongoDB Compass for GUI.
+Make sure to have MongoDB installed, Node.js, and MongoDB Compass for GUI to see collections.
 
 1. Navigate to the server folder, right click the folder, and open a terminal.
 
