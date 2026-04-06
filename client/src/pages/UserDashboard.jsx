@@ -263,7 +263,7 @@ function UserDashboard() {
 
   return (
     <div className="dashboard-page">
-      {/* Top heading section */}
+      
       <div className="dashboard-top-bar">
         <div>
           <h1>User Dashboard</h1>
@@ -275,10 +275,10 @@ function UserDashboard() {
         </button>
       </div>
 
-      {/* Show page message */}
+      
       {pageMessage && <p className="page-message">{pageMessage}</p>}
 
-      {/* Login warning section */}
+      
       {userId === "" && (
         <div className="dashboard-section">
           <h2>Login Connection Needed</h2>
@@ -286,7 +286,7 @@ function UserDashboard() {
         </div>
       )}
 
-      {/* Reservation form section */}
+      
       <div className="dashboard-section">
         <h2>My Reservation Form</h2>
 
