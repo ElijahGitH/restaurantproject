@@ -38,7 +38,7 @@ function LocationsPage() {
                 <p>Nicholas B. & Dylan J.</p>
 
                 <br />
-
+                {/*Description created by Generative AI*/}
                 <p className="location-description">
                   Tucked into the heart of Winter Springs, our cozy corner brings
                   sunshine to every plate. Slow down, savor bold flavors, and
@@ -69,7 +69,7 @@ function LocationsPage() {
                 <p>Amber S. & Elijah R.</p>
 
                 <br />
-
+                {/*Description created by Generative AI*/}
                 <p className="location-description">
                   Right near the heart of Oviedo, this spot is all about flavor
                   and good times. Whether you're grabbing a quick bite or meeting
@@ -100,7 +100,7 @@ function LocationsPage() {
                 <p>Marco Y.</p>
 
                 <br />
-
+                {/*Description created by Generative AI*/}
                 <p className="location-description">
                   In the charm of historic Sanford, Casa del Sol brings a
                   vibrant twist to classic flavors with a warm and elevated
