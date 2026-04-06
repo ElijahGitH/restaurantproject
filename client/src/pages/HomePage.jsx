@@ -19,6 +19,7 @@ function HomePage() {
             <div className="col-md-8 Story_Left">
               <div className="Story_Flavor">
                 <br />
+                {/*Descriptions created by Generative AI*/}
                 <h2>
                   <u>FLAVOR, SUN, AND TRADITION</u>
                 </h2>
